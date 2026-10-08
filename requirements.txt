@@ -1,6 +1,6 @@
 # Reproduction of Maiorana (2021) — runtime dependencies.
-# The code was developed and run with the sibling virtual environment
-# ../EEGLearning/.venv (Python 3.12); versions below are what that env ships.
+# The project ships its own virtual environment (.venv, Python 3.12);
+# versions below are what that environment ships.
 torch>=2.2
 mne>=1.6
 numpy>=1.26

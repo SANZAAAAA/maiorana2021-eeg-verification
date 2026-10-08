@@ -92,11 +92,16 @@ Maiorana2021_EEGVerification/
 
 ## 4. 环境与运行
 
-代码直接复用同目录下 `EEGLearning/.venv`（Python 3.12，含 torch / mne / scikit-learn）：
+项目自带独立虚拟环境 `.venv`（Python 3.12，含 torch / mne / scikit-learn）：
 
 ```bash
 cd /Users/nagi/Desktop/Researches/Maiorana2021_EEGVerification
-PY=../EEGLearning/.venv/bin/python
+PY=.venv/bin/python
+
+# 0) 需要从零重建环境时（可选，需要 uv）
+UV_CACHE_DIR="$PWD/.uv/cache" UV_PYTHON_INSTALL_DIR="$PWD/.uv/python" \
+  uv venv --python 3.12 .venv
+UV_CACHE_DIR="$PWD/.uv/cache" uv pip install -r requirements.txt
 
 # 1) 预处理并生成帧缓存（只需跑一次）
 MPLCONFIGDIR=/tmp/mplcache $PY scripts/prepare_data.py
@@ -111,6 +116,9 @@ MPLCONFIGDIR=/tmp/mplcache $PY scripts/run_experiment.py \
 
 可选参数：`--channels Fz Cz Pz`（只跑部分通道）、`--max-probe-frames`、
 `--epochs`、`--pairs-per-subject`。（`--quick` 会降低 epochs / 配对数并限制折数。）
+
+> ⚠️ **`.venv` 与路径绑定**：`bin/` 下的软链接、脚本 shebang 写的都是绝对路径，
+> 不要给本文件夹改名或移动位置，否则解释器会失效（失效时按上面第 0 步重建即可）。
 
 > 若想用别的数据集（如自有的 5-session 库），只需实现 `src/data.py` 中的
 > `build_cache`，产出同样的 `frames.npz`（键为 `subject|session|task`）
@@ -202,9 +210,8 @@ MPLCONFIGDIR=/tmp/mplcache $PY scripts/run_experiment.py \
 ## 6. 测试与质量检查
 
 ```bash
-# 单元测试（无 pytest 依赖，用内置 runner 或 pytest 均可）
-$PY -c "import sys; sys.path[:0]=['.','tests']; import test_pipeline as t; \
-[getattr(t,f)() for f in dir(t) if f.startswith('test_')]; print('ok')"
+# 单元测试（只用标准库 unittest，无第三方依赖）
+$PY -m unittest discover -s tests -t . -v
 ```
 
 覆盖内容：预处理维度（19×320）、CAR 去均值、CNN 输出 256 维、
