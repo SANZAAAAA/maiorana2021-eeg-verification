@@ -1,0 +1,25 @@
+# 虚拟环境与包缓存
+.venv/
+venv/
+.uv/
+.mplconfig/
+
+# Python 产物
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# 数据与训练产物（可由 scripts/prepare_data.py、run_experiment.py 重新生成）
+data/cache/
+data/eegmmidb/
+results/models/
+results/run.log
+*.pt
+*.pth
+*.ckpt
+*.npz
+
+# 系统与编辑器
+.DS_Store
+.idea/
+*.swp
